@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Verification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: #ffffff;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 35%),
+        linear-gradient(135deg, #111827, #4c1d95, #be185d);
+      overflow: hidden;
+    }
+
+    .background-glow {
+      position: fixed;
+      inset: auto auto -120px -120px;
+      width: 360px;
+      height: 360px;
+      background: rgba(255, 255, 255, 0.18);
+      filter: blur(70px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      text-align: center;
+      padding: 42px 30px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(18px);
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 74px;
+      height: 74px;
+      margin-bottom: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 8vw, 46px);
+      line-height: 1.05;
+      margin-bottom: 14px;
+      letter-spacing: -1.5px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 16px 22px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .yes {
+      color: #111827;
+      background: #ffffff;
+      box-shadow: 0 14px 30px rgba(255, 255, 255, 0.22);
+    }
+
+    .no {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+    }
+
+    .yes:hover {
+      box-shadow: 0 18px 40px rgba(255, 255, 255, 0.32);
+    }
+
+    .no:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .message {
+      min-height: 22px;
+      margin-top: 22px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 16px;
+      }
+
+      .card {
+        padding: 34px 22px;
+        border-radius: 24px;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-glow"></div>
+
+  <main class="card">
+    <div class="badge">18+</div>
+    <h1>Are you 18 years old?</h1>
+    <p>Please confirm your age before continuing to the website.</p>
+
+    <div class="buttons">
+      <button class="yes" onclick="enterSite()">Yes, I am</button>
+      <button class="no" onclick="denyAccess()">No</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </main>
+
+  <script>
+    function enterSite() {
+      document.getElementById('message').textContent = 'Access granted. Welcome!';
+      // Replace this with your real redirect link:
+      // window.location.href = 'https://your-site.com';
+    }
+
+    function denyAccess() {
+      document.getElementById('message').textContent = 'Sorry, you must be 18 or older to continue.';
+    }
+  </script>
+</body>
+</html>
